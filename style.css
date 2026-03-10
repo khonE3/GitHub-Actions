@@ -145,7 +145,9 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--spacing-xl);
+  padding-top: env(safe-area-inset-top, 0px);
   transition: background var(--transition-base);
+  overflow: visible;
 }
 
 .navbar.scrolled {
@@ -173,6 +175,10 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: contents;
+  display: inline-block;
 }
 
 .nav-links {
@@ -1210,6 +1216,16 @@ body {
 
   .mobile-sidebar {
     display: block;
+  }
+
+  .navbar {
+    background: rgba(13, 17, 23, 0.97);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .navbar.scrolled {
+    background: #0d1117;
   }
 
   .stats-bar {
