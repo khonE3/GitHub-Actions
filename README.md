@@ -1,5 +1,7 @@
 # 🚀 GitHub Actions
 
+https://khone3.github.io/GitHub-Actions/
+
 > **สรุปเนื้อหา GitHub Actions** — ระบบ CI/CD อัตโนมัติที่อยู่ใน GitHub  
 > พร้อมตัวอย่างและ Best Practices
 
