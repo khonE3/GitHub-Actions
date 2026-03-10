@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="สรุปเนื้อหา GitHub Actions — ระบบ CI/CD อัตโนมัติที่อยู่ใน GitHub พร้อมตัวอย่างและ Best Practices"
+    />
+    <meta
+      name="keywords"
+      content="GitHub Actions, CI/CD, DevOps, Automation, Workflow"
+    />
+    <meta name="author" content="GitHub Actions Summary" />
+    <title>GitHub Actions สรุปเนื้อหาครบถ้วน</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>"
+    />
+  </head>
+  <body>
+    <!-- ===== Navbar ===== -->
+    <nav class="navbar" id="navbar">
+      <a href="#" class="nav-brand">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <polygon points="10 8 16 12 10 16 10 8" />
+        </svg>
+        <span class="nav-brand-text">GitHub Actions</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#workflow-syntax">Syntax</a></li>
+        <li><a href="#events">Events</a></li>
+        <li><a href="#jobs">Jobs</a></li>
+        <li><a href="#actions">Actions</a></li>
+        <li><a href="#secrets">Secrets</a></li>
+        <li><a href="#environments">Environments</a></li>
+        <li><a href="#matrix">Matrix</a></li>
+        <li><a href="#caching">Caching</a></li>
+        <li><a href="#best-practices">Best Practices</a></li>
+      </ul>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+
+    <!-- ===== Mobile Sidebar ===== -->
+    <div class="mobile-sidebar" id="mobileSidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">📖 เมนู</span>
+        <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">✕</button>
+      </div>
+      <a href="#concepts"><span class="nav-icon">🧩</span> Core Concepts</a>
+      <a href="#workflow-syntax"
+        ><span class="nav-icon">📝</span> Workflow Syntax</a
+      >
+      <a href="#events"><span class="nav-icon">⚡</span> Events & Triggers</a>
+      <a href="#jobs"><span class="nav-icon">🔧</span> Jobs & Steps</a>
+      <a href="#actions"><span class="nav-icon">🏪</span> Marketplace</a>
+      <a href="#secrets"><span class="nav-icon">🔐</span> Secrets</a>
+      <a href="#environments"><span class="nav-icon">🌍</span> Environments</a>
+      <a href="#matrix"><span class="nav-icon">🔄</span> Matrix Strategy</a>
+      <a href="#caching"><span class="nav-icon">📦</span> Caching</a>
+      <a href="#best-practices"
+        ><span class="nav-icon">✅</span> Best Practices</a
+      >
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ===== Hero Section ===== -->
+    <section class="hero" id="hero">
+      <div class="hero-particles"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          CI/CD Automation Platform
+        </div>
+        <h1>
+          สรุป<br />
+          <span class="gradient-text">GitHub Actions</span>
+        </h1>
+        <p class="hero-subtitle">
+          เรียนรู้ระบบ CI/CD อัตโนมัติที่ built-in อยู่ใน GitHub<br />
+          ตั้งแต่พื้นฐานจนถึงการใช้งานจริง พร้อมตัวอย่างโค้ด
+        </p>
+        <div class="hero-actions">
+          <a href="#concepts" class="btn btn-primary"> 📖 เริ่มเรียนรู้ </a>
+          <a
+            href="https://docs.github.com/en/actions"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-secondary"
+          >
+            📚 Official Docs
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Stats Bar ===== -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-number">15K+</div>
+        <div class="stat-label">Actions ใน Marketplace</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Runner OS</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">Free</div>
+        <div class="stat-label">Public Repos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Possibilities</div>
+      </div>
+    </div>
+
+    <!-- ===== Main Content ===== -->
+    <main class="main-content">
+      <!-- ===== Core Concepts ===== -->
+      <section class="section" id="concepts">
+        <div class="section-header">
+          <h2><span class="section-icon">🧩</span> Core Concepts</h2>
+          <p>พื้นฐานที่ต้องรู้ก่อนเริ่มใช้ GitHub Actions</p>
+        </div>
+
+        <div class="card-grid">
+          <div class="card concept-card">
+            <div class="card-icon">📋</div>
+            <h3>Workflow</h3>
+            <p>
+              กระบวนการอัตโนมัติที่กำหนดใน YAML file เก็บไว้ที่
+              <code>.github/workflows/</code>
+            </p>
+          </div>
+          <div class="card concept-card">
+            <div class="card-icon">⚡</div>
+            <h3>Event</h3>
+            <p>
+              สิ่งที่ trigger workflow ให้ทำงาน เช่น push, pull_request,
+              schedule
+            </p>
+          </div>
+          <div class="card concept-card">
+            <div class="card-icon">💼</div>
+            <h3>Job</h3>
+            <p>
+              ชุดของ steps ที่ทำงานบน runner เดียวกัน สามารถรัน parallel ได้
+            </p>
+          </div>
+          <div class="card concept-card">
+            <div class="card-icon">👣</div>
+            <h3>Step</h3>
+            <p>task ย่อยใน job — รัน command หรือเรียกใช้ action</p>
+          </div>
+          <div class="card concept-card">
+            <div class="card-icon">🔌</div>
+            <h3>Action</h3>
+            <p>
+              custom application ที่ reusable ได้ มีทั้งสำเร็จรูปและสร้างเอง
+            </p>
+          </div>
+          <div class="card concept-card">
+            <div class="card-icon">🖥️</div>
+            <h3>Runner</h3>
+            <p>
+              server ที่รัน workflow — ใช้ GitHub-hosted หรือ self-hosted ก็ได้
+            </p>
+          </div>
+        </div>
+
+        <!-- Flow Diagram -->
+        <div class="flow-diagram">
+          <div class="flow-step">
+            <span class="step-icon">🔔</span>
+            <span class="step-label">Event</span>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">
+            <span class="step-icon">📋</span>
+            <span class="step-label">Workflow</span>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">
+            <span class="step-icon">💼</span>
+            <span class="step-label">Job(s)</span>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">
+            <span class="step-icon">👣</span>
+            <span class="step-label">Step(s)</span>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">
+            <span class="step-icon">✅</span>
+            <span class="step-label">Result</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Workflow Syntax ===== -->
+      <section class="section" id="workflow-syntax">
+        <div class="section-header">
+          <h2><span class="section-icon">📝</span> Workflow Syntax</h2>
+          <p>
+            โครงสร้างไฟล์ Workflow YAML ที่เก็บใน
+            <code>.github/workflows/</code>
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">yaml</span>
+            <button class="copy-btn">📋 Copy</button>
+          </div>
+          <pre><code><span class="key">name:</span> <span class="string">CI Pipeline</span>                    <span class="comment"># ชื่อ workflow</span>
+
+<span class="key">on:</span>                                  <span class="comment"># Events ที่ trigger</span>
+  <span class="key">push:</span>
+    <span class="key">branches:</span> <span class="value">[main]</span>
+  <span class="key">pull_request:</span>
+    <span class="key">branches:</span> <span class="value">[main]</span>
+
+<span class="key">permissions:</span>                         <span class="comment"># กำหนดสิทธิ์</span>
+  <span class="key">contents:</span> <span class="string">read</span>
+
+<span class="key">jobs:</span>                                <span class="comment"># รายการ jobs</span>
+  <span class="key">build:</span>
+    <span class="key">runs-on:</span> <span class="string">ubuntu-latest</span>           <span class="comment"># runner ที่ใช้</span>
+
+    <span class="key">steps:</span>
+      - <span class="key">name:</span> <span class="string">Checkout code</span>
+        <span class="key">uses:</span> <span class="value">actions/checkout@v4</span>    <span class="comment"># ใช้ action สำเร็จรูป</span>
+
+      - <span class="key">name:</span> <span class="string">Setup Node.js</span>
+        <span class="key">uses:</span> <span class="value">actions/setup-node@v4</span>
+        <span class="key">with:</span>
+          <span class="key">node-version:</span> <span class="string">'20'</span>
+
+      - <span class="key">name:</span> <span class="string">Install dependencies</span>
+        <span class="key">run:</span> <span class="string">npm ci</span>                  <span class="comment"># รัน command</span>
+
+      - <span class="key">name:</span> <span class="string">Run tests</span>
+        <span class="key">run:</span> <span class="string">npm test</span>
+
+      - <span class="key">name:</span> <span class="string">Build</span>
+        <span class="key">run:</span> <span class="string">npm run build</span></code></pre>
+        </div>
+      </section>
+
+      <!-- ===== Events & Triggers ===== -->
+      <section class="section" id="events">
+        <div class="section-header">
+          <h2><span class="section-icon">⚡</span> Events & Triggers</h2>
+          <p>วิธีกำหนดว่า workflow จะถูก trigger เมื่อไหร่</p>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="tab-push">Push & PR</button>
+          <button class="tab-btn" data-tab="tab-schedule">Schedule</button>
+          <button class="tab-btn" data-tab="tab-manual">Manual</button>
+          <button class="tab-btn" data-tab="tab-other">Other</button>
+        </div>
+
+        <div class="tab-content active" id="tab-push">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="code-lang">yaml</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="key">on:</span>
+  <span class="key">push:</span>
+    <span class="key">branches:</span> <span class="value">[main, develop]</span>
+    <span class="key">paths:</span>
+      - <span class="string">'src/**'</span>              <span class="comment"># trigger เมื่อไฟล์ใน src/ เปลี่ยน</span>
+    <span class="key">tags:</span>
+      - <span class="string">'v*'</span>                  <span class="comment"># trigger เมื่อ push tag v*</span>
+
+  <span class="key">pull_request:</span>
+    <span class="key">types:</span> <span class="value">[opened, synchronize, reopened]</span></code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-schedule">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="code-lang">yaml</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="key">on:</span>
+  <span class="key">schedule:</span>
+    - <span class="key">cron:</span> <span class="string">'0 2 * * 1'</span>      <span class="comment"># ทุกวันจันทร์ เวลา 02:00 UTC</span>
+    - <span class="key">cron:</span> <span class="string">'30 9 * * *'</span>     <span class="comment"># ทุกวัน เวลา 09:30 UTC</span>
+
+<span class="comment"># Cron Format: minute hour day month weekday</span>
+<span class="comment"># ┌─── minute (0-59)</span>
+<span class="comment"># │ ┌─── hour (0-23)</span>
+<span class="comment"># │ │ ┌─── day of month (1-31)</span>
+<span class="comment"># │ │ │ ┌─── month (1-12)</span>
+<span class="comment"># │ │ │ │ ┌─── day of week (0-6, Sun=0)</span>
+<span class="comment"># * * * * *</span></code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-manual">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="code-lang">yaml</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="key">on:</span>
+  <span class="key">workflow_dispatch:</span>
+    <span class="key">inputs:</span>
+      <span class="key">environment:</span>
+        <span class="key">description:</span> <span class="string">'Target environment'</span>
+        <span class="key">required:</span> <span class="boolean">true</span>
+        <span class="key">default:</span> <span class="string">'staging'</span>
+        <span class="key">type:</span> <span class="value">choice</span>
+        <span class="key">options:</span>
+          - <span class="string">staging</span>
+          - <span class="string">production</span>
+      <span class="key">debug:</span>
+        <span class="key">description:</span> <span class="string">'Enable debug logging'</span>
+        <span class="key">required:</span> <span class="boolean">false</span>
+        <span class="key">type:</span> <span class="value">boolean</span></code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-other">
+          <div class="table-wrapper">
+            <table class="styled-table">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>คำอธิบาย</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>release</code></td>
+                  <td>เมื่อมี release ใหม่ถูกสร้าง</td>
+                </tr>
+                <tr>
+                  <td><code>issues</code></td>
+                  <td>เมื่อมี issue ถูกสร้างหรือแก้ไข</td>
+                </tr>
+                <tr>
+                  <td><code>workflow_call</code></td>
+                  <td>เรียกจาก workflow อื่น (reusable workflows)</td>
+                </tr>
+                <tr>
+                  <td><code>repository_dispatch</code></td>
+                  <td>trigger จาก API ภายนอก</td>
+                </tr>
+                <tr>
+                  <td><code>workflow_run</code></td>
+                  <td>trigger เมื่อ workflow อื่นเสร็จ</td>
+                </tr>
+                <tr>
+                  <td><code>create</code> / <code>delete</code></td>
+                  <td>เมื่อ branch หรือ tag ถูกสร้าง/ลบ</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Jobs & Steps ===== -->
+      <section class="section" id="jobs">
+        <div class="section-header">
+          <h2><span class="section-icon">🔧</span> Jobs & Steps</h2>
+          <p>การจัดการ jobs, dependencies, conditions และ outputs</p>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="tab-deps">
+            Dependencies
+          </button>
+          <button class="tab-btn" data-tab="tab-conditions">Conditions</button>
+          <button class="tab-btn" data-tab="tab-outputs">Outputs</button>
+        </div>
+
+        <div class="tab-content active" id="tab-deps">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="code-lang">yaml</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="key">jobs:</span>
+  <span class="key">test:</span>
+    <span class="key">runs-on:</span> <span class="string">ubuntu-latest</span>
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> <span class="value">actions/checkout@v4</span>
+      - <span class="key">run:</span> <span class="string">npm test</span>
+
+  <span class="key">build:</span>
+    <span class="key">needs:</span> <span class="value">test</span>                      <span class="comment"># รอ test เสร็จก่อน</span>
+    <span class="key">runs-on:</span> <span class="string">ubuntu-latest</span>
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> <span class="value">actions/checkout@v4</span>
+      - <span class="key">run:</span> <span class="string">npm run build</span>
+
+  <span class="key">deploy:</span>
+    <span class="key">needs:</span> <span class="value">[test, build]</span>             <span class="comment"># รอทั้ง test และ build</span>
+    <span class="key">runs-on:</span> <span class="string">ubuntu-latest</span>
+    <span class="key">if:</span> <span class="string">github.ref == 'refs/heads/main'</span>
+    <span class="key">steps:</span>
+      - <span class="key">run:</span> <span class="string">echo "Deploying..."</span></code></pre>
+          </div>
+
+          <div class="info-box success">
+            <span class="info-box-icon">💡</span>
+            <div class="info-box-content">
+              <strong>Tip:</strong> ใช้ <code>needs</code> เพื่อสร้าง dependency
+              chain ระหว่าง jobs — jobs ที่ไม่มี dependency จะรัน parallel
+              อัตโนมัติ
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-conditions">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="code-lang">yaml</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="key">steps:</span>
+  - <span class="key">name:</span> <span class="string">Deploy to production</span>
+    <span class="key">if:</span> <span class="string">github.event_name == 'push' && github.ref == 'refs/heads/main'</span>
+    <span class="key">run:</span> <span class="string">./deploy.sh</span>
+
+  - <span class="key">name:</span> <span class="string">Notify on failure</span>
+    <span class="key">if:</span> <span class="value">failure()</span>                  <span class="comment"># รันเมื่อ step ก่อนหน้า fail</span>
+    <span class="key">run:</span> <span class="string">echo "Build failed!"</span>
+
+  - <span class="key">name:</span> <span class="string">Always run cleanup</span>
+    <span class="key">if:</span> <span class="value">always()</span>                   <span class="comment"># รันทุกกรณี</span>
+    <span class="key">run:</span> <span class="string">./cleanup.sh</span>
+
+  - <span class="key">name:</span> <span class="string">Only on success</span>
+    <span class="key">if:</span> <span class="value">success()</span>                  <span class="comment"># รันเมื่อสำเร็จ (default)</span>
+    <span class="key">run:</span> <span class="string">echo "All good!"</span></code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-outputs">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="code-lang">yaml</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="key">jobs:</span>
+  <span class="key">prepare:</span>
+    <span class="key">runs-on:</span> <span class="string">ubuntu-latest</span>
+    <span class="key">outputs:</span>
+      <span class="key">version:</span> <span class="value">${{ steps.get_version.outputs.version }}</span>
+    <span class="key">steps:</span>
+      - <span class="key">id:</span> <span class="value">get_version</span>
+        <span class="key">run:</span> <span class="string">echo "version=1.2.3" >> $GITHUB_OUTPUT</span>
+
+  <span class="key">deploy:</span>
+    <span class="key">needs:</span> <span class="value">prepare</span>
+    <span class="key">runs-on:</span> <span class="string">ubuntu-latest</span>
+    <span class="key">steps:</span>
+      - <span class="key">run:</span> <span class="string">echo "Deploying v${{ needs.prepare.outputs.version }}"</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Actions Marketplace ===== -->
+      <section class="section" id="actions">
+        <div class="section-header">
+          <h2><span class="section-icon">🏪</span> Actions Marketplace</h2>
+          <p>Actions สำเร็จรูปยอดนิยมที่ใช้บ่อย</p>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>ใช้ทำอะไร</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>actions/checkout@v4</code></td>
+                <td>Clone repository เข้ามาใน runner</td>
+              </tr>
+              <tr>
+                <td><code>actions/setup-node@v4</code></td>
+                <td>ติดตั้ง Node.js version ที่ต้องการ</td>
+              </tr>
+              <tr>
+                <td><code>actions/setup-python@v5</code></td>
+                <td>ติดตั้ง Python version ที่ต้องการ</td>
+              </tr>
+              <tr>
+                <td><code>actions/cache@v4</code></td>
+                <td>Cache dependencies เพื่อเพิ่มความเร็ว</td>
+              </tr>
+              <tr>
+                <td><code>actions/upload-artifact@v4</code></td>
+                <td>Upload build artifacts</td>
+              </tr>
+              <tr>
+                <td><code>actions/deploy-pages@v4</code></td>
+                <td>Deploy ไปยัง GitHub Pages</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">yaml — Custom Composite Action</span>
+            <button class="copy-btn">📋 Copy</button>
+          </div>
+          <pre><code><span class="comment"># .github/actions/greeting/action.yml</span>
+<span class="key">name:</span> <span class="string">'Greeting Action'</span>
+<span class="key">description:</span> <span class="string">'Greet someone'</span>
+<span class="key">inputs:</span>
+  <span class="key">who-to-greet:</span>
+    <span class="key">description:</span> <span class="string">'Who to greet'</span>
+    <span class="key">required:</span> <span class="boolean">true</span>
+    <span class="key">default:</span> <span class="string">'World'</span>
+<span class="key">runs:</span>
+  <span class="key">using:</span> <span class="string">'composite'</span>
+  <span class="key">steps:</span>
+    - <span class="key">run:</span> <span class="string">echo "Hello ${{ inputs.who-to-greet }}!"</span>
+      <span class="key">shell:</span> <span class="string">bash</span></code></pre>
+        </div>
+      </section>
+
+      <!-- ===== Secrets & Variables ===== -->
+      <section class="section" id="secrets">
+        <div class="section-header">
+          <h2><span class="section-icon">🔐</span> Secrets & Variables</h2>
+          <p>จัดการข้อมูลลับและค่า configuration ใน workflows</p>
+        </div>
+
+        <div
+          class="card-grid"
+          style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))"
+        >
+          <div class="card">
+            <h3
+              style="
+                margin-bottom: var(--spacing-md);
+                color: var(--accent-danger);
+              "
+            >
+              🔒 Secrets
+            </h3>
+            <p
+              style="
+                color: var(--text-secondary);
+                font-size: 0.9rem;
+                margin-bottom: var(--spacing-md);
+              "
+            >
+              ข้อมูลลับที่ถูก encrypt เช่น API keys, passwords — ถูก mask ใน
+              logs อัตโนมัติ
+            </p>
+            <div class="code-block" style="margin: 0">
+              <div class="code-header">
+                <div class="code-dots">
+                  <span></span><span></span><span></span>
+                </div>
+                <span class="code-lang">yaml</span>
+                <button class="copy-btn">📋 Copy</button>
+              </div>
+              <pre><code><span class="key">env:</span>
+  <span class="key">API_KEY:</span> <span class="value">${{ secrets.API_KEY }}</span>
+  <span class="key">DB_PASS:</span> <span class="value">${{ secrets.DB_PASSWORD }}</span></code></pre>
+            </div>
+          </div>
+          <div class="card">
+            <h3
+              style="
+                margin-bottom: var(--spacing-md);
+                color: var(--accent-secondary);
+              "
+            >
+              📊 Variables
+            </h3>
+            <p
+              style="
+                color: var(--text-secondary);
+                font-size: 0.9rem;
+                margin-bottom: var(--spacing-md);
+              "
+            >
+              ค่าที่ไม่ลับ เช่น environment name, feature flags — มองเห็นได้ใน
+              logs
+            </p>
+            <div class="code-block" style="margin: 0">
+              <div class="code-header">
+                <div class="code-dots">
+                  <span></span><span></span><span></span>
+                </div>
+                <span class="code-lang">yaml</span>
+                <button class="copy-btn">📋 Copy</button>
+              </div>
+              <pre><code><span class="key">env:</span>
+  <span class="key">APP_ENV:</span> <span class="value">${{ vars.APP_ENV }}</span>
+  <span class="key">API_URL:</span> <span class="value">${{ vars.API_URL }}</span></code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box warning">
+          <span class="info-box-icon">⚠️</span>
+          <div class="info-box-content">
+            <strong>สำคัญ:</strong> อย่าเขียน secrets ลงใน workflow files
+            โดยตรง! ใช้ Settings > Secrets and variables > Actions เพื่อเพิ่ม
+            secrets ผ่าน GitHub UI เท่านั้น
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Environments ===== -->
+      <section class="section" id="environments">
+        <div class="section-header">
+          <h2><span class="section-icon">🌍</span> Environments</h2>
+          <p>จัดการ deployment environments พร้อมระบบ protection rules</p>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">yaml</span>
+            <button class="copy-btn">📋 Copy</button>
+          </div>
+          <pre><code><span class="key">jobs:</span>
+  <span class="key">deploy-staging:</span>
+    <span class="key">runs-on:</span> <span class="string">ubuntu-latest</span>
+    <span class="key">environment:</span>
+      <span class="key">name:</span> <span class="string">staging</span>
+      <span class="key">url:</span> <span class="string">https://staging.example.com</span>
+    <span class="key">steps:</span>
+      - <span class="key">run:</span> <span class="string">echo "Deploy to staging"</span>
+
+  <span class="key">deploy-production:</span>
+    <span class="key">needs:</span> <span class="value">deploy-staging</span>
+    <span class="key">runs-on:</span> <span class="string">ubuntu-latest</span>
+    <span class="key">environment:</span>
+      <span class="key">name:</span> <span class="string">production</span>
+      <span class="key">url:</span> <span class="string">https://example.com</span>
+    <span class="key">steps:</span>
+      - <span class="key">run:</span> <span class="string">echo "Deploy to production"</span></code></pre>
+        </div>
+
+        <ul class="feature-list">
+          <li>
+            <span class="icon">🛡️</span>
+            <div class="text">
+              <strong>Protection Rules</strong>
+              <span
+                >ต้องมีคน approve ก่อน deploy — ตั้งค่า required reviewers
+                ได้</span
+              >
+            </div>
+          </li>
+          <li>
+            <span class="icon">⏰</span>
+            <div class="text">
+              <strong>Wait Timer</strong>
+              <span>รอเวลาที่กำหนดก่อน deploy จริง เช่น 15 นาที</span>
+            </div>
+          </li>
+          <li>
+            <span class="icon">🔑</span>
+            <div class="text">
+              <strong>Environment Secrets</strong>
+              <span
+                >secrets เฉพาะ environment — production ใช้คนละค่ากับ
+                staging</span
+              >
+            </div>
+          </li>
+          <li>
+            <span class="icon">🌿</span>
+            <div class="text">
+              <strong>Branch Policies</strong>
+              <span
+                >จำกัดว่า branch ไหนสามารถ deploy ไป environment นี้ได้</span
+              >
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ===== Matrix Strategy ===== -->
+      <section class="section" id="matrix">
+        <div class="section-header">
+          <h2><span class="section-icon">🔄</span> Matrix Strategy</h2>
+          <p>ทดสอบโค้ดบนหลาย OS, versions, และ configurations พร้อมกัน</p>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">yaml</span>
+            <button class="copy-btn">📋 Copy</button>
+          </div>
+          <pre><code><span class="key">jobs:</span>
+  <span class="key">test:</span>
+    <span class="key">runs-on:</span> <span class="value">${{ matrix.os }}</span>
+    <span class="key">strategy:</span>
+      <span class="key">matrix:</span>
+        <span class="key">os:</span> <span class="value">[ubuntu-latest, windows-latest, macos-latest]</span>
+        <span class="key">node-version:</span> <span class="value">[18, 20, 22]</span>
+        <span class="key">exclude:</span>                       <span class="comment"># ข้ามบาง combination</span>
+          - <span class="key">os:</span> <span class="string">macos-latest</span>
+            <span class="key">node-version:</span> <span class="number">18</span>
+        <span class="key">include:</span>                       <span class="comment"># เพิ่ม combination พิเศษ</span>
+          - <span class="key">os:</span> <span class="string">ubuntu-latest</span>
+            <span class="key">node-version:</span> <span class="number">22</span>
+            <span class="key">experimental:</span> <span class="boolean">true</span>
+      <span class="key">fail-fast:</span> <span class="boolean">false</span>              <span class="comment"># ไม่หยุดถ้า job อื่น fail</span>
+
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> <span class="value">actions/checkout@v4</span>
+      - <span class="key">uses:</span> <span class="value">actions/setup-node@v4</span>
+        <span class="key">with:</span>
+          <span class="key">node-version:</span> <span class="value">${{ matrix.node-version }}</span>
+      - <span class="key">run:</span> <span class="string">npm ci</span>
+      - <span class="key">run:</span> <span class="string">npm test</span></code></pre>
+        </div>
+
+        <div class="info-box">
+          <span class="info-box-icon">📊</span>
+          <div class="info-box-content">
+            ตัวอย่างข้างต้นจะสร้าง <strong>8 jobs</strong> (3 OS × 3 Node
+            versions - 1 excluded) ที่รัน parallel — ทำให้ทดสอบครอบคลุมหลาย
+            environment ได้อย่างรวดเร็ว
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Caching & Artifacts ===== -->
+      <section class="section" id="caching">
+        <div class="section-header">
+          <h2><span class="section-icon">📦</span> Caching & Artifacts</h2>
+          <p>
+            เพิ่มความเร็ว workflow ด้วย caching และส่ง artifacts ระหว่าง jobs
+          </p>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="tab-cache">Caching</button>
+          <button class="tab-btn" data-tab="tab-artifacts">Artifacts</button>
+        </div>
+
+        <div class="tab-content active" id="tab-cache">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="code-lang">yaml</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="key">steps:</span>
+  - <span class="key">uses:</span> <span class="value">actions/cache@v4</span>
+    <span class="key">with:</span>
+      <span class="key">path:</span> <span class="string">~/.npm</span>                <span class="comment"># path ที่จะ cache</span>
+      <span class="key">key:</span> <span class="value">${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}</span>
+      <span class="key">restore-keys:</span> <span class="string">|</span>
+        <span class="value">${{ runner.os }}-node-</span>    <span class="comment"># fallback keys</span>
+
+  - <span class="key">run:</span> <span class="string">npm ci</span>                   <span class="comment"># จะเร็วขึ้นถ้ามี cache</span></code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-artifacts">
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="code-lang">yaml</span>
+              <button class="copy-btn">📋 Copy</button>
+            </div>
+            <pre><code><span class="key">jobs:</span>
+  <span class="key">build:</span>
+    <span class="key">runs-on:</span> <span class="string">ubuntu-latest</span>
+    <span class="key">steps:</span>
+      - <span class="key">run:</span> <span class="string">npm run build</span>
+      - <span class="key">uses:</span> <span class="value">actions/upload-artifact@v4</span>
+        <span class="key">with:</span>
+          <span class="key">name:</span> <span class="string">build-output</span>
+          <span class="key">path:</span> <span class="string">dist/</span>
+          <span class="key">retention-days:</span> <span class="number">7</span>          <span class="comment"># เก็บไว้ 7 วัน</span>
+
+  <span class="key">deploy:</span>
+    <span class="key">needs:</span> <span class="value">build</span>
+    <span class="key">runs-on:</span> <span class="string">ubuntu-latest</span>
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> <span class="value">actions/download-artifact@v4</span>
+        <span class="key">with:</span>
+          <span class="key">name:</span> <span class="string">build-output</span>
+          <span class="key">path:</span> <span class="string">dist/</span>
+      - <span class="key">run:</span> <span class="string">ls -la dist/</span>            <span class="comment"># ใช้ artifact จาก build job</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Best Practices ===== -->
+      <section class="section" id="best-practices">
+        <div class="section-header">
+          <h2><span class="section-icon">✅</span> Best Practices</h2>
+          <p>แนวทางปฏิบัติที่ดีสำหรับการใช้ GitHub Actions</p>
+        </div>
+
+        <div class="practices-grid">
+          <div class="card practice-card security">
+            <span class="practice-category">Security</span>
+            <h3 style="margin-bottom: var(--spacing-md)">🔒 ความปลอดภัย</h3>
+            <ul>
+              <li>
+                ใช้ pinned versions สำหรับ actions (<code>@v4</code> หรือ commit
+                SHA)
+              </li>
+              <li>กำหนด <code>permissions</code> ให้น้อยที่สุด</li>
+              <li>อย่า hardcode secrets ใน workflow files</li>
+              <li>ใช้ <code>CODEOWNERS</code> เพื่อควบคุมการแก้ไข workflow</li>
+            </ul>
+          </div>
+          <div class="card practice-card performance">
+            <span class="practice-category">Performance</span>
+            <h3 style="margin-bottom: var(--spacing-md)">⚡ ประสิทธิภาพ</h3>
+            <ul>
+              <li>ใช้ caching สำหรับ dependencies</li>
+              <li>
+                ใช้ <code>paths</code> filter เพื่อ trigger เฉพาะที่จำเป็น
+              </li>
+              <li>ใช้ <code>concurrency</code> เพื่อยกเลิก runs ซ้ำ</li>
+              <li>แยก jobs ออกเพื่อรัน parallel ได้</li>
+            </ul>
+          </div>
+          <div class="card practice-card maintenance">
+            <span class="practice-category">Maintenance</span>
+            <h3 style="margin-bottom: var(--spacing-md)">📋 ดูแลรักษา</h3>
+            <ul>
+              <li>ใช้ reusable workflows สำหรับ logic ซ้ำ</li>
+              <li>ใช้ composite actions สำหรับ steps ที่ใช้บ่อย</li>
+              <li>เขียน comments ใน workflow files</li>
+              <li>ใช้ meaningful names สำหรับ jobs/steps</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">yaml — Concurrency Control</span>
+            <button class="copy-btn">📋 Copy</button>
+          </div>
+          <pre><code><span class="key">concurrency:</span>
+  <span class="key">group:</span> <span class="value">${{ github.workflow }}-${{ github.ref }}</span>
+  <span class="key">cancel-in-progress:</span> <span class="boolean">true</span>          <span class="comment"># ยกเลิก run เก่าถ้ามี run ใหม่</span></code></pre>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+      <div class="footer-links">
+        <a href="https://docs.github.com/en/actions" target="_blank"
+          >📚 Documentation</a
+        >
+        <a href="https://github.com/marketplace?type=actions" target="_blank"
+          >🏪 Marketplace</a
+        >
+        <a
+          href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions"
+          target="_blank"
+          >📝 Syntax Ref</a
+        >
+        <a href="https://github.com/actions/starter-workflows" target="_blank"
+          >🚀 Starter Workflows</a
+        >
+      </div>
+      <p>Made with ❤️ for learning GitHub Actions</p>
+    </footer>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+      ↑
+    </button>
+
+    <script src="script.js"></script>
+  </body>
+</html>
